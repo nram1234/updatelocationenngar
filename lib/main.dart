@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: "مواقع الفروع",
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: "مواقع الفروع"),
     );
   }
 }
@@ -79,12 +79,22 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     _locationData = await location.getLocation();
-    if(branches!=null){
-      dio.post('https://decorewood-eg.com/api/change_location',data: {"branch_id":branches!.id,"longitude":branches!.longitude,"latitude":branches!.latitude}).then((value) {
+    if (branches != null) {
+      dio.post('https://decorewood-eg.com/api/change_location', data: {
+        "branch_id": branches!.id,
+        "longitude": _locationData!.longitude,
+        "latitude": _locationData!.latitude
+      }).then((value) {
         allBranchs = AllBranchs.fromJson(value.data);
-        print(allBranchs?.toJson());
-        setState(() {});
-      });
+        final scaffold = ScaffoldMessenger.of(context);
+        scaffold.showSnackBar(
+          SnackBar(
+            content: const Text('تم التحديث بنجاح'),
+            //  action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+          ),
+        );
+       // branches=null;
+        getdatap();});
     }
     print(
         "_locationData.latitude =>${_locationData?.latitude} ${_locationData?.longitude} ${_locationData?.heading} ${_locationData?.latitude}");
@@ -124,6 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text("مواقع الفروع",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             DropdownButton<Branches>(
               value: branches,
               icon: const Icon(Icons.arrow_downward),
@@ -161,12 +173,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    getdatap();
+  }
+
+  getdatap() async {
+    branches=null;
     dio.get('https://decorewood-eg.com/api/all_branchs').then((value) {
       allBranchs = AllBranchs.fromJson(value.data);
-      print(allBranchs?.toJson());
+
       setState(() {});
     });
   }
-
-  getdatap() async {}
 }
