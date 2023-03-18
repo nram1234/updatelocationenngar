@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _locationData = await location.getLocation();
     if (branches != null) {
-      dio.post('https://decorewood-eg.com/api/change_location', data: {
+      dio.post('https://alnajargroup.com/api/change_location', data: {
         "branch_id": branches!.id,
         "longitude": _locationData!.longitude,
         "latitude": _locationData!.latitude
